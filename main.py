@@ -3,6 +3,13 @@ import pyautogui as pag
 import subprocess
 import time
 import os
+import platform
+
+os_name = platform.system()
+if os_name == "Windows":
+    app_name = "notepad++"
+else:
+    app_name = "notepad-plus-plus" # The Linux/MacOS version is for snap package "notepad-plus-plus"
 
 def recognize_speech():
     recognizer = sr.Recognizer()
@@ -22,7 +29,7 @@ def recognize_speech():
 
 def open_notepad():
     print("Đang mở Notepad++")
-    subprocess.Popen(["notepad++"])
+    subprocess.run([app_name])
     
 def create_new_file():
     print("Đang tạo file mới")
@@ -30,7 +37,13 @@ def create_new_file():
 
 def write_text(text):
     print(f"Writing text: {text}")
-    pag.typewrite(text)
+    array= text.split()
+    command=[app_name, "-qt='"]
+    command[1]+=array[0]
+    for i in range(1,len(array)):
+        command+=[array[i]]
+    command[len(command)-1]+="'"
+    subprocess.run(command)
 
 def save_file(location):
     print("Saving file")
@@ -48,7 +61,10 @@ def save_file(location):
 
 def close_notepad():
     print("Đang đóng Notepad++")
-    pag.hotkey('alt', 'f4')
+    if os_name == "Windows":
+        subprocess.run(["taskkill", "/f", "/im", app_name+".exe"])
+    else:
+        subprocess.run(["killall", app_name])
 
 def main():
     while True:
@@ -57,12 +73,13 @@ def main():
             open_notepad()
         elif "tạo file mới" in command:
             create_new_file()
-        elif "ghi" in command:
-            print("Listening for text to write")
+        elif "ghi" in command or "viết" in command or "gõ" in command:
+            print("Hãy đọc nội dung văn bản bạn muốn ghi vào file")
             text_to_write = recognize_speech()
             write_text(text_to_write)
         elif "lưu" in command:
-            save_file("desktop")
+            if "desktop" in command:
+                save_file("desktop")
         elif "đóng" in command:
             close_notepad()
             break
