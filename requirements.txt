@@ -2,4 +2,5 @@ SpeechRecognition
 pyautogui
 pyaudio
 gtts
+pygobject
 playsound

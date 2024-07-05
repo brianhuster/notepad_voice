@@ -10,7 +10,7 @@ from playsound import playsound
 os_name = platform.system()
 if os_name == "Windows":
     app_name = "notepad++"
-    subprocess.run('set "PATH=%PATH%;C:\Program Files\Notepad++"', shell=True)
+    subprocess.run(r'set "PATH=%PATH%;C:\Program Files\Notepad++"', shell=True)
 else:
     app_name = "notepad-plus-plus" # The Linux/MacOS version is for snap package "notepad-plus-plus"
 
@@ -18,6 +18,7 @@ def recognize_speech():
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         print("Đang nghe...")
+        recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.listen(source)
     try:
         text = recognizer.recognize_google(audio, language='vi-VN')
@@ -39,7 +40,7 @@ def recognize_speech():
 def speak(text):
     tts = gTTS(text, lang='vi')
     tts.save("voice.mp3")
-    os.system("start voice.mp3")
+    playsound("voice.mp3")
 
 def open_notepad():
     print("Đang mở Notepad++")
@@ -62,6 +63,7 @@ def write_text(text):
 def save_file(location):
     print("Saving file")
     pag.hotkey('ctrl', 'shift','s')
+    pag.press('enter')
     time.sleep(1)
     file_name = "output.txt"
     if location == "desktop":
@@ -95,6 +97,7 @@ def main():
             text_to_write=""
             while not text_to_write:
                 text_to_write = recognize_speech()
+            close_notepad()
             write_text(text_to_write)
         elif "lưu" in command:
             if "desktop" in command:
