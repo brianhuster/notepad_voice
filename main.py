@@ -29,7 +29,7 @@ def recognize_speech():
 
 def open_notepad():
     print("Đang mở Notepad++")
-    subprocess.run([app_name])
+    subprocess.Popen([app_name])
     
 def create_new_file():
     print("Đang tạo file mới")
@@ -38,16 +38,19 @@ def create_new_file():
 def write_text(text):
     print(f"Writing text: {text}")
     array= text.split()
+    if len(array)==0:
+        return 0
     command=[app_name, "-qt='"]
     command[1]+=array[0]
     for i in range(1,len(array)):
         command+=[array[i]]
     command[len(command)-1]+="'"
+    print(command)
     subprocess.run(command)
 
 def save_file(location):
     print("Saving file")
-    pag.hotkey('ctrl', 's')
+    pag.hotkey('ctrl', 'shift','s')
     time.sleep(1)
     file_name = "output.txt"
     if location == "desktop":
@@ -71,15 +74,19 @@ def main():
         command = recognize_speech()
         if "mở notepad" in command:
             open_notepad()
-        elif "tạo file mới" in command:
+        elif "mới" in command:
             create_new_file()
         elif "ghi" in command or "viết" in command or "gõ" in command:
-            print("Hãy đọc nội dung văn bản bạn muốn ghi vào file")
-            text_to_write = recognize_speech()
+            print("Hãy đọc nội dung văn bản bạn muốn ghi vào file.")
+            text_to_write=""
+            while not text_to_write:
+                text_to_write = recognize_speech()
             write_text(text_to_write)
         elif "lưu" in command:
             if "desktop" in command:
                 save_file("desktop")
+            else:
+                save_file("current")
         elif "đóng" in command:
             close_notepad()
             break
