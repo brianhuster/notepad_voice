@@ -6,13 +6,19 @@ import os
 import platform
 from gtts import gTTS
 from playsound import playsound
+import shutil
 
+current_path = os.getcwd()
 os_name = platform.system()
 if os_name == "Windows":
     app_name = "notepad++"
+    default_path=r"C:\Program Files\Notepad++"
     subprocess.run(r'set "PATH=%PATH%;C:\Program Files\Notepad++"', shell=True)
+    desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 else:
     app_name = "notepad-plus-plus" # The Linux/MacOS version is for snap package "notepad-plus-plus"
+    default_path=os.path.join(os.path.join(os.environ['HOME']), "snap/notepad-plus-plus/common/.wine/drive_c/Program Files/Notepad++")
+    desktop_path = os.path.join(os.path.join(os.environ['HOME']), 'Desktop')
 
 def recognize_speech():
     recognizer = sr.Recognizer()
@@ -58,23 +64,24 @@ def write_text(text):
     command=app_name+' -qt="'
     command+=text+'"'
     print(command)
-    subprocess.run(command, shell=True)
+    subprocess.Popen(command, shell=True)
 
 def save_file(location):
     print("Saving file")
     pag.hotkey('ctrl', 'shift','s')
     pag.press('enter')
-    time.sleep(1)
-    file_name = "output.txt"
+    file_name = "text.txt"
+    pag.hotkey('ctrl', 'a')
+    pag.press('delete')
+    pag.typewrite(file_name)
+    pag.press('enter')
+    file = os.path.join(default_path, file_name)
     if location == "desktop":
-        desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop/')
-        file_path = os.path.join(desktop_path, file_name)
+        shutil.move(file, desktop_path)
         speak("File đã được lưu vào thư mục Desktop.")
     else:
-        file_path = os.path.join(os.getcwd(), file_name)
+        shutil.move(file, current_path)
         speak("File đã được lưu vào thư mục hiện tại.")
-    pag.typewrite(file_path)
-    pag.press('enter')
     speak("File đã được lưu vào thư mục "+location+".")    
     time.sleep(1)
 
@@ -99,17 +106,20 @@ def main():
                 text_to_write = recognize_speech()
             close_notepad()
             write_text(text_to_write)
+            close_notepad()
+            open_notepad()
         elif "lưu" in command:
             if "desktop" in command:
                 save_file("desktop")
             else:
                 save_file("hiện tại")
-        elif "đóng" in command:
+        elif "đóng" in command or "thoát" in command:
             close_notepad()
             break
         else:
-            print("Không thể nhận dạng câu lệnh.")
+            speak("Không thể nhận dạng câu lệnh.")
 
 if __name__ == "__main__":
+    # speak("Hãy ra lệnh cho tôi")
     main()
 
