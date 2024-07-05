@@ -64,6 +64,7 @@ def write_text(text):
     command=app_name+' -qt="'
     command+=text+'"'
     print(command)
+    close_notepad()
     subprocess.Popen(command, shell=True)
 
 def save_file(location):
