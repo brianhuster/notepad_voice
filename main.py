@@ -8,7 +8,6 @@ from gtts import gTTS
 from playsound import playsound
 import shutil
 import time
-import wave
 
 current_path = os.getcwd()
 os_name = platform.system()
@@ -25,15 +24,10 @@ else:
 def recognize_speech():
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
+        print("Đang điều chỉnh micro cho phù hợp với tiếng ồn môi trường")
         recognizer.adjust_for_ambient_noise(source, duration=5)
         print("Đang nghe...")
-        audio = recognizer.listen(source)
-        # save audio file
-        with wave.open("output.wav", "wb") as file:
-            file.setnchannels(1)  # Mono
-            file.setsampwidth(audio.sample_width)
-            file.setframerate(16000)
-            file.writeframes(audio.get_wav_data())        
+        audio = recognizer.listen(source)        
 
     try:
         text = recognizer.recognize_google(audio, language='vi-VN')
@@ -44,9 +38,6 @@ def recognize_speech():
         return ""
     except sr.RequestError:
         speak("Không thể kết nối với API nhận dạng giọng nói, vui lòng kiểm tra kết nối mạng")
-        return ""
-    except sr.WaitTimeoutError:
-        speak("Hết thời gian chờ, vui lòng thử lại")
         return ""
     except Exception as e:
         print(e)
@@ -67,8 +58,7 @@ def create_new_file():
 
 def write_text(text):
     print(f"Writing text: {text}")
-    array= text.split()
-    if len(array)==0:
+    if not text:
         return 0
     command=app_name+' -qt="'
     command+=text+'"'
