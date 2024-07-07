@@ -47,6 +47,7 @@ def speak(text):
     tts = gTTS(text, lang='vi')
     tts.save("voice.mp3")
     playsound("voice.mp3")
+    os.remove("voice.mp3")
 
 def open_notepad():
     print("Đang mở Notepad++")
