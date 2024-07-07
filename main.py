@@ -79,10 +79,8 @@ def save_file(location):
     time.sleep(1)
     if location == "desktop":
         shutil.move(file, desktop_path)
-        speak("File đã được lưu vào thư mục Desktop.")
     else:
         shutil.move(file, current_path)
-        speak("File đã được lưu vào thư mục hiện tại.")
     speak("File đã được lưu vào thư mục "+location+".")    
     time.sleep(1)
 
