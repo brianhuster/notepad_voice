@@ -8,6 +8,7 @@ from gtts import gTTS
 from playsound import playsound
 import shutil
 import time
+import wave
 
 current_path = os.getcwd()
 os_name = platform.system()
@@ -24,9 +25,16 @@ else:
 def recognize_speech():
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
-        # recognizer.adjust_for_ambient_noise(source)
+        recognizer.adjust_for_ambient_noise(source, duration=5)
         print("Đang nghe...")
         audio = recognizer.listen(source)
+        # save audio file
+        with wave.open("output.wav", "wb") as file:
+            file.setnchannels(1)  # Mono
+            file.setsampwidth(audio.sample_width)
+            file.setframerate(16000)
+            file.writeframes(audio.get_wav_data())        
+
     try:
         text = recognizer.recognize_google(audio, language='vi-VN')
         print(f"Đã nghe thấy: {text}")
@@ -65,7 +73,6 @@ def write_text(text):
     command=app_name+' -qt="'
     command+=text+'"'
     print(command)
-    close_notepad()
     subprocess.Popen(command, shell=True)
 
 def save_file(location):
