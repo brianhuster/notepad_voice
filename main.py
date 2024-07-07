@@ -7,6 +7,7 @@ import platform
 from gtts import gTTS
 from playsound import playsound
 import shutil
+import time
 
 current_path = os.getcwd()
 os_name = platform.system()
@@ -23,8 +24,8 @@ else:
 def recognize_speech():
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
+        # recognizer.adjust_for_ambient_noise(source)
         print("Đang nghe...")
-        recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.listen(source)
     try:
         text = recognizer.recognize_google(audio, language='vi-VN')
@@ -69,14 +70,15 @@ def write_text(text):
 
 def save_file(location):
     print("Saving file")
-    pag.hotkey('ctrl', 'shift','s')
-    pag.press('enter')
+    pag.hotkey('ctrl', 'alt','s')
     file_name = "text.txt"
+    time.sleep(1)
     pag.hotkey('ctrl', 'a')
     pag.press('delete')
     pag.typewrite(file_name)
     pag.press('enter')
     file = os.path.join(default_path, file_name)
+    time.sleep(1)
     if location == "desktop":
         shutil.move(file, desktop_path)
         speak("File đã được lưu vào thư mục Desktop.")
@@ -105,10 +107,10 @@ def main():
             text_to_write=""
             while not text_to_write:
                 text_to_write = recognize_speech()
+
             close_notepad()
             write_text(text_to_write)
-            close_notepad()
-            open_notepad()
+
         elif "lưu" in command:
             if "desktop" in command:
                 save_file("desktop")
@@ -121,6 +123,6 @@ def main():
             speak("Không thể nhận dạng câu lệnh.")
 
 if __name__ == "__main__":
-    # speak("Hãy ra lệnh cho tôi")
+    speak("Hãy ra lệnh cho tôi")
     main()
 
