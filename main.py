@@ -13,7 +13,7 @@ current_path = os.getcwd()
 os_name = platform.system()
 if os_name == "Windows":
     app_name = "notepad++"
-    default_path=r"C:\Program Files\Notepad++"
+    default_path=current_path
     subprocess.run(r'set "PATH=%PATH%;C:\Program Files\Notepad++"', shell=True)
     desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 else:
