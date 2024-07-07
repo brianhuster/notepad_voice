@@ -8,6 +8,7 @@ from gtts import gTTS
 from playsound import playsound
 import shutil
 import time
+from datetime import datetime
 
 current_path = os.getcwd()
 os_name = platform.system()
@@ -69,7 +70,7 @@ def write_text(text):
 def save_file(location):
     print("Saving file")
     pag.hotkey('ctrl', 'alt','s')
-    file_name = "text.txt"
+    file_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".txt"
     time.sleep(1)
     pag.hotkey('ctrl', 'a')
     pag.press('delete')
@@ -80,8 +81,9 @@ def save_file(location):
     if location == "desktop":
         shutil.move(file, desktop_path)
     else:
-        shutil.move(file, current_path)
-    speak("File đã được lưu vào thư mục "+location+".")    
+        if default_path != current_path:
+            shutil.move(file, current_path)
+    speak("File " + file_name +  " đã được lưu vào thư mục " + location + ".")    
     time.sleep(1)
 
 def close_notepad():
