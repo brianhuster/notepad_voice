@@ -26,7 +26,7 @@ def recognize_speech():
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         print("Đang điều chỉnh micro cho phù hợp với tiếng ồn môi trường")
-        recognizer.adjust_for_ambient_noise(source, duration=5)
+        recognizer.adjust_for_ambient_noise(source)
         print("Đang nghe...")
         audio = recognizer.listen(source)        
 
@@ -53,6 +53,7 @@ def speak(text):
 def open_notepad():
     print("Đang mở Notepad++")
     subprocess.Popen([app_name])
+    time.sleep(1)
     
 def create_new_file():
     print("Đang tạo file mới")
@@ -79,10 +80,10 @@ def save_file(location):
     file = os.path.join(default_path, file_name)
     time.sleep(1)
     if location == "desktop":
-        shutil.move(file, desktop_path)
+        shutil.copy(file, desktop_path)
     else:
         if default_path != current_path:
-            shutil.move(file, current_path)
+            shutil.copy(file, current_path)
     speak("File " + file_name +  " đã được lưu vào thư mục " + location + ".")    
     time.sleep(1)
 
