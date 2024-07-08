@@ -15,7 +15,7 @@ os_name = platform.system()
 if os_name == "Windows":
     app_name = "notepad++"
     default_path=current_path
-    subprocess.run(r'set "PATH=%PATH%;C:\Program Files\Notepad++"', shell=True)
+    subprocess.run(r'setx "PATH=%PATH%;C:\Program Files\Notepad++"', shell=True)
     desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 else:
     app_name = "notepad-plus-plus" # The Linux/MacOS version is for snap package "notepad-plus-plus"
