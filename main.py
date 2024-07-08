@@ -53,7 +53,7 @@ def speak(text):
 def open_notepad():
     print("Đang mở Notepad++")
     subprocess.Popen([app_name])
-    time.sleep(1)
+    time.sleep(2)
     
 def create_new_file():
     print("Đang tạo file mới")
@@ -67,6 +67,7 @@ def write_text(text):
     command+=text+'"'
     print(command)
     subprocess.Popen(command, shell=True)
+    time.sleep(2)
 
 def save_file(location):
     print("Saving file")
@@ -74,7 +75,9 @@ def save_file(location):
     file_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".txt"
     time.sleep(1)
     pag.hotkey('ctrl', 'a')
+    time.sleep(1)
     pag.press('delete')
+    tag.sleep(1)
     pag.typewrite(file_name)
     pag.press('enter')
     file = os.path.join(default_path, file_name)
